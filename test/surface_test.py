@@ -899,7 +899,7 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
         self.assertEqual(surf1.get_at((0, 0)), (255, 255, 255, 100))
         self.assertEqual(surf2.get_at((0, 0)), (255, 255, 255, 100))
 
-    def todo_test_convert(self):
+    def test_convert(self):
 
         # __doc__ (as of 2008-08-02) for pygame.surface.Surface.convert:
 
@@ -923,8 +923,40 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
         # stripped if the original had them. See Surface.convert_alpha() for
         # preserving or creating per-pixel alphas.
         #
-
-        self.fail()
+        Surface((width, height), flags=0, depth=0, masks=None) -> Surface
+        Surface((width, height), flags=0, Surface) -> Surface
+    
+        surf1 = pygame.Surface((10, 10))
+        surf2 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 32)
+        surf3 = pygame.Surface((20, 20), flags=pygame.SRCCOLORKEY, 32)
+        surf4 = pygame.Surface((20, 20), flags=0xFFFFFFFF)
+        surf5 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 0)
+        surf6 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 8)
+        surf7 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 12)
+        surf8 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 15)
+        surf9 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 16)
+        surf10 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 24)
+        surf11 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 32)
+        # surf12 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 10)  raise exception
+        
+        
+        # mask1 = [0, 0, 0, 0] rasies error
+        mask2 = [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF]
+        mask3 = [0xFF00, 0xFF, 0xFF0000, 0xFF0]
+        mask4 = [0xFF00, 0xFF, 0xFF0000, 0]
+        mask5 = [0xFF0, 0, 0, 0]
+        
+        surf13 = pygame.Surface((10,10), 0, 0, mask2)
+        surf14 = pygame.Surface((10,10), 0, 0, mask3)
+        surf15 = pygame.Surface((10,10), 0, 0, mask4)
+        surf16 = pygame.Surface((10,10), 0, 0, mask5)
+        
+        
+        
+        if pygame.get_sdl_version()[0] == 1:
+            surf1 = pygame.Surface((20,20))
+            surf1Copy = surf1.convert()
+        #self.fail()
 
     def test_convert__pixel_format_as_surface_subclass(self):
         """Ensure convert accepts a Surface subclass argument."""
