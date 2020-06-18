@@ -102,7 +102,7 @@ if '-pygame-ci' in sys.argv:
     os.environ['CFLAGS'] = cflags
     sys.argv.remove ('-pygame-ci')
 
- if '-gcov' in sys.argv:
+if '-gcov' in sys.argv:
     cflags = os.environ.get('CFLAGS', '')
     if cflags:
         cflags += ' '
