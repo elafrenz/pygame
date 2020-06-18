@@ -923,39 +923,81 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
         # stripped if the original had them. See Surface.convert_alpha() for
         # preserving or creating per-pixel alphas.
         #
-        Surface((width, height), flags=0, depth=0, masks=None) -> Surface
-        Surface((width, height), flags=0, Surface) -> Surface
-    
         surf1 = pygame.Surface((10, 10))
-        surf2 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 32)
-        surf3 = pygame.Surface((20, 20), flags=pygame.SRCCOLORKEY, 32)
-        surf4 = pygame.Surface((20, 20), flags=0xFFFFFFFF)
-        surf5 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 0)
-        surf6 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 8)
-        surf7 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 12)
-        surf8 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 15)
-        surf9 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 16)
-        surf10 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 24)
-        surf11 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 32)
+        surf2 = pygame.Surface((100, 100), pygame.SRCALPHA, 32)
+        surf3 = pygame.Surface((20, 20), pygame.SRCCOLORKEY, 32)
+        #  surf4 = pygame.Surface((20, 20), 0xFFFFFFFF)
+        #surf5 = pygame.Surface((100, 100), pygame.SRCCOLORKEY, 0)
+        surf6 = pygame.Surface((100, 100), pygame.ANYFORMAT, 8)
+        surf7 = pygame.Surface((100, 100), pygame.ANYFORMAT, 12)
+        surf8 = pygame.Surface((100, 100), pygame.ANYFORMAT, 15)
+        surf9 = pygame.Surface((100, 100), pygame.ANYFORMAT, 16)
+        surf10 = pygame.Surface((100, 100), pygame.ANYFORMAT, 24)
+        surf11 = pygame.Surface((100, 100), pygame.ANYFORMAT, 32)
         # surf12 = pygame.Surface((100, 100), flags=pygame.SRCALPHA, 10)  raise exception
         
-        
         # mask1 = [0, 0, 0, 0] rasies error
-        mask2 = [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF]
+        #  mask2 = [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF]
         mask3 = [0xFF00, 0xFF, 0xFF0000, 0xFF0]
         mask4 = [0xFF00, 0xFF, 0xFF0000, 0]
         mask5 = [0xFF0, 0, 0, 0]
         
-        surf13 = pygame.Surface((10,10), 0, 0, mask2)
+        # surf13 = pygame.Surface((10,10), 0, 0, mask2)
         surf14 = pygame.Surface((10,10), 0, 0, mask3)
         surf15 = pygame.Surface((10,10), 0, 0, mask4)
         surf16 = pygame.Surface((10,10), 0, 0, mask5)
         
+        pygame.display.init()
+        screen = pygame.display.set_mode((800, 600))
+        # if pygame.get_sdl_version()[0] == 1:
         
+        surf1Copy = surf1.convert()
+        self.assertIsInstance(surf1Copy, pygame.Surface)
+        self.assertEqual(surf1Copy.get_bitsize(), pygame.display.Info().bitsize)
         
-        if pygame.get_sdl_version()[0] == 1:
-            surf1 = pygame.Surface((20,20))
-            surf1Copy = surf1.convert()
+        surf2Copy = surf2.convert()
+        self.assertIsInstance(surf2Copy, pygame.Surface)
+        self.assertEqual(surf2Copy.get_bitsize(), pygame.display.Info().bitsize)
+        
+        surf6Copy = surf6.convert()
+        self.assertIsInstance(surf6Copy, pygame.Surface)
+        self.assertEqual(surf6Copy.get_bitsize(), pygame.display.Info().bitsize)
+        
+        surf7Copy = surf7.convert()
+        self.assertIsInstance(surf7Copy, pygame.Surface)
+        self.assertEqual(surf7Copy.get_bitsize(), pygame.display.Info().bitsize)
+
+        surf9Copy = surf9.convert()
+        self.assertIsInstance(surf9Copy, pygame.Surface)
+        self.assertEqual(surf9Copy.get_bitsize(), pygame.display.Info().bitsize)
+        
+        surf14Copy = surf14.convert()
+        self.assertIsInstance(surf14Copy, pygame.Surface)
+        self.assertEqual(surf14Copy.get_bitsize(), pygame.display.Info().bitsize)
+            
+        surf16Copy = surf16.convert()
+        self.assertIsInstance(surf16Copy, pygame.Surface)
+        self.assertEqual(surf16Copy.get_bitsize(), pygame.display.Info().bitsize)
+
+    
+        
+        #possible flags:
+        #HWSURFACE      0x00000001    # Surface is in video memory
+        #ASYNCBLIT      0x00000004    # Use asynchronous blits if possible
+        #ANYFORMAT      0x10000000    # Allow any video depth/pixel-format
+        #HWPALETTE      0x20000000    # Surface has exclusive palette
+        #DOUBLEBUF      0x40000000    # Set up double-buffered video mode
+        #FULLSCREEN     0x80000000    # Surface is a full screen display
+        #OPENGL         0x00000002    # Create an OpenGL rendering context
+        #OPENGLBLIT     0x0000000A    # OBSOLETE. Create an OpenGL rendering context and use it for blitting.
+        #RESIZABLE      0x00000010    # This video mode may be resized
+        #NOFRAME        0x00000020    # No window caption or edge frame
+        #HWACCEL        0x00000100    # Blit uses hardware acceleration
+        #SRCCOLORKEY    0x00001000    # Blit uses a source color key
+        #RLEACCELOK     0x00002000    # Private flag
+        #RLEACCEL       0x00004000    # Surface is RLE encoded
+        #SRCALPHA       0x00010000    # Blit uses source alpha blending
+        #PREALLOC       0x01000000    # Surface uses preallocated memory
         #self.fail()
 
     def test_convert__pixel_format_as_surface_subclass(self):
