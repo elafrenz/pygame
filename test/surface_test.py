@@ -898,7 +898,7 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
 
         self.assertEqual(surf1.get_at((0, 0)), (255, 255, 255, 100))
         self.assertEqual(surf2.get_at((0, 0)), (255, 255, 255, 100))
-
+    
     def test_convert(self):
 
         # __doc__ (as of 2008-08-02) for pygame.surface.Surface.convert:
@@ -923,6 +923,11 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
         # stripped if the original had them. See Surface.convert_alpha() for
         # preserving or creating per-pixel alphas.
         #
+        
+        #  Surface((width, height), flags=0, depth=0, masks=None) -> Surface
+        #Surface((width, height), flags=0, Surface) -> Surface
+
+    
         surf1 = pygame.Surface((10, 10))
         surf2 = pygame.Surface((100, 100), pygame.SRCALPHA, 32)
         surf3 = pygame.Surface((20, 20), pygame.SRCCOLORKEY, 32)
@@ -940,12 +945,12 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
         #  mask2 = [0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF]
         mask3 = [0xFF00, 0xFF, 0xFF0000, 0xFF0]
         mask4 = [0xFF00, 0xFF, 0xFF0000, 0]
-        mask5 = [0xFF0, 0, 0, 0]
+        # mask5 = [0xFF0, 0xFF0, 0xFF0, 0]
         
         # surf13 = pygame.Surface((10,10), 0, 0, mask2)
-        surf14 = pygame.Surface((10,10), 0, 0, mask3)
-        surf15 = pygame.Surface((10,10), 0, 0, mask4)
-        surf16 = pygame.Surface((10,10), 0, 0, mask5)
+        surf14 = pygame.Surface((10,10), 0, 32, mask3)
+        surf15 = pygame.Surface((10,10), 0, 32, mask4)
+        # surf16 = pygame.Surface((10,10), 0, 32, mask5)
         
         pygame.display.init()
         screen = pygame.display.set_mode((800, 600))
@@ -975,10 +980,74 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
         self.assertIsInstance(surf14Copy, pygame.Surface)
         self.assertEqual(surf14Copy.get_bitsize(), pygame.display.Info().bitsize)
             
-        surf16Copy = surf16.convert()
-        self.assertIsInstance(surf16Copy, pygame.Surface)
-        self.assertEqual(surf16Copy.get_bitsize(), pygame.display.Info().bitsize)
+            # surf16Copy = surf16.convert()
+            #  self.assertIsInstance(surf16Copy, pygame.Surface)
+            #  self.assertEqual(surf16Copy.get_bitsize(), pygame.display.Info().bitsize)
 
+        
+        surf1Copy2 = surf1.convert(surf2)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf2.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf2.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf2.get_flags())
+            
+        surf1Copy2 = surf1.convert(surf3)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf3.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf3.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf3.get_flags())
+    
+        surf1Copy2 = surf1.convert(surf6)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf6.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf6.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf6.get_flags())
+        
+        surf1Copy2 = surf1.convert(surf7)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf7.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf7.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf7.get_flags())
+            
+        surf1Copy2 = surf1.convert(surf8)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf8.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf8.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf8.get_flags())
+        
+        surf1Copy2 = surf1.convert(surf9)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf9.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf9.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf9.get_flags())
+            
+        surf1Copy2 = surf1.convert(surf10)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf10.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf10.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf10.get_flags())
+            
+        surf1Copy2 = surf1.convert(surf11)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf11.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf11.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf11.get_flags())
+            
+        surf1Copy2 = surf1.convert(surf14)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf14.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf14.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf14.get_flags())
+                
+        surf1Copy2 = surf1.convert(surf15)
+        self.assertEqual(surf1Copy2.get_bitsize(), surf15.get_bitsize())
+        self.assertEqual(surf1Copy2.get_masks(), surf15.get_masks())
+        self.assertEqual(surf1Copy2.get_flags(), surf15.get_flags())
+    
+    #  surf1Copy2 = surf1.convert(surf16)
+    #  self.assertEqual(surf1Copy2.get_bitsize(), surf16.get_bitsize())
+    #  self.assertEqual(surf1Copy2.get_masks(), surf16.get_masks())
+    #  self.assertEqual(surf1Copy2.get_flags(), surf16.get_flags())
+    
+        self1Copy3 = surf1.convert(32, pygame.SRCALPHA)
+        self.assertEqual(self1Copy3.get_bitsize(), 32)
+        self.assertEqual(self1Copy3.get_flags(), pygame.SRCALPHA)
+    
+        self1Copy3 = surf1.convert([0xFF00, 0xFF, 0xFF0000, 0xFF0], pygame.SRCALPHA)
+        tempMask = (0xFF00, 0xFF, 0xFF0000, 0xFF0)
+        self.assertEqual(self1Copy3.get_masks(), tempMask)
+        self.assertEqual(self1Copy3.get_flags(), pygame.SRCALPHA)
     
         
         #possible flags:
@@ -998,7 +1067,12 @@ class SurfaceTypeTest(AssertRaisesRegexMixin, unittest.TestCase):
         #RLEACCEL       0x00004000    # Surface is RLE encoded
         #SRCALPHA       0x00010000    # Blit uses source alpha blending
         #PREALLOC       0x01000000    # Surface uses preallocated memory
-        #self.fail()
+
+        
+
+        
+
+#self.fail()
 
     def test_convert__pixel_format_as_surface_subclass(self):
         """Ensure convert accepts a Surface subclass argument."""
