@@ -2038,17 +2038,26 @@ fprintf(cov_f, "%d\n", __LINE__ + 1);
             return NULL;
         }
     }
-
+fprintf(cov_f, "%d\n", __LINE__ + 1);
 #endif /* IS_SDLv2 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
     pgSurface_Unprep(self);
-
+fprintf(cov_f, "%d\n", __LINE__ + 1);
 #if IS_SDLv1
+fprintf(cov_f, "%d\n", __LINE__ + 1);
     final = surf_subtype_new(Py_TYPE(self), newsurf);
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
 #else  /* IS_SDLv2 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
     final = surf_subtype_new(Py_TYPE(self), newsurf, 1);
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
 #endif /* IS_SDLv2 */
-    if (!final)
+fprintf(cov_f, "%d\n", __LINE__ + 1);
+    if (!final){
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
         SDL_FreeSurface(newsurf);
+        }
+        fprintf(cov_f, "%d\n", __LINE__ + 1);
     return final;
 }
 
