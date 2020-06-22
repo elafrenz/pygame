@@ -1689,196 +1689,352 @@ surf_copy(pgSurfaceObject *self, PyObject *args)
 static PyObject *
 surf_convert(pgSurfaceObject *self, PyObject *args)
 {
+    FILE *cov_f = fopen("convert_coverage.txt_out", "a");
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     SDL_Surface *surf = pgSurface_AsSurface(self);
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     PyObject *final;
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     PyObject *argobject = NULL;
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     SDL_Surface *src;
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     SDL_Surface *newsurf;
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     Uint32 flags = UINT32_MAX;
 
+        fprintf(cov_f, "%d\n", __LINE__ + 1); 
 #if IS_SDLv2
+        fprintf(cov_f, "%d\n", __LINE__ + 1); 
     Uint32 colorkey;
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     Uint8 key_r, key_g, key_b, key_a = 255;
+            fprintf(cov_f, "%d\n", __LINE__ + 1); 
     int has_colorkey = SDL_FALSE;
-
+        fprintf(cov_f, "%d\n", __LINE__ + 1); 
 #endif /* IS_SDLv2 */
 
-
-    if (!SDL_WasInit(SDL_INIT_VIDEO))
-        return RAISE(pgExc_SDLError,
+        fprintf(cov_f, "%d\n", __LINE__ + 1); 
+    if (!SDL_WasInit(SDL_INIT_VIDEO)){
+        fprintf(cov_f, "%d\n", __LINE__ + 1); 
+        /*for line coverage*/return RAISE(pgExc_SDLError,
                      "cannot convert without pygame.display initialized");
-
-    if (!PyArg_ParseTuple(args, "|Oi", &argobject, &flags))
-        return NULL;
-
-#if IS_SDLv1
-    if (surf->flags & SDL_OPENGL)
-        return RAISE(pgExc_SDLError, "Cannot convert opengl display");
-#endif /* IS_SDLv1 */
-
-    pgSurface_Prep(self);
-
-#if IS_SDLv2
-    if (SDL_GetColorKey(surf, &colorkey) == 0){
-        has_colorkey = SDL_TRUE;
-        if (SDL_ISPIXELFORMAT_ALPHA(surf->format->format))
-            SDL_GetRGBA(colorkey, surf->format, &key_r, &key_g, &key_b, &key_a);
-        else
-            SDL_GetRGB(colorkey, surf->format, &key_r, &key_g, &key_b);
     }
-#endif
-
-    if (argobject) {
-        if (pgSurface_Check(argobject)) {
-            src = pgSurface_AsSurface(argobject);
+        fprintf(cov_f, "%d\n", __LINE__ + 1); 
+    if (!PyArg_ParseTuple(args, "|Oi", &argobject, &flags)){
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
+        return NULL;
+        }
+fprintf(cov_f, "%d\n", __LINE__ + 1);
 #if IS_SDLv1
+fprintf(cov_f, "%d\n", __LINE__ + 1);
+    if (surf->flags & SDL_OPENGL){
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
+        return RAISE(pgExc_SDLError, "Cannot convert opengl display");
+        }
+        fprintf(cov_f, "%d\n", __LINE__ + 1);
+#endif /* IS_SDLv1 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
+    pgSurface_Prep(self);
+fprintf(cov_f, "%d\n", __LINE__ + 1);
+#if IS_SDLv2
+fprintf(cov_f, "%d\n", __LINE__ + 1);
+    if (SDL_GetColorKey(surf, &colorkey) == 0){
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
+        has_colorkey = SDL_TRUE;
+        fprintf(cov_f, "%d\n", __LINE__ + 1);
+        if (SDL_ISPIXELFORMAT_ALPHA(surf->format->format)){
+        fprintf(cov_f, "%d\n", __LINE__ + 1);
+            SDL_GetRGBA(colorkey, surf->format, &key_r, &key_g, &key_b, &key_a);
+            }
+        else{
+        fprintf(cov_f, "%d\n", __LINE__ - 1);
+        fprintf(cov_f, "%d\n", __LINE__ + 1);
+            SDL_GetRGB(colorkey, surf->format, &key_r, &key_g, &key_b);
+            }
+    }
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
+#endif
+fprintf(cov_f, "%d\n", __LINE__ + 1);
+    if (argobject) {
+    fprintf(cov_f, "%d\n", __LINE__ + 1);
+        if (pgSurface_Check(argobject)) {
+        fprintf(cov_f, "%d\n", __LINE__ + 1);
+            src = pgSurface_AsSurface(argobject);
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
+#if IS_SDLv1
+fprintf(cov_f, "%d\n", __LINE__ + 1);
             flags =
                 src->flags | (surf->flags & (SDL_SRCCOLORKEY | SDL_SRCALPHA));
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
             newsurf = SDL_ConvertSurface(surf, src->format, flags);
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
 #else  /* IS_SDLv2 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
             newsurf = SDL_ConvertSurface(surf, src->format, 0);
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
 #endif /* IS_SDLv2 */
         }
         else {
+        fprintf(cov_f, "%d\n", __LINE__ - 1);
+        fprintf(cov_f, "%d\n", __LINE__ + 1);
             int bpp;
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
             SDL_PixelFormat format;
-
+fprintf(cov_f, "%d\n", __LINE__ + 1);
             memcpy(&format, surf->format, sizeof(format));
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
             if (pg_IntFromObj(argobject, &bpp)) {
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
                 Uint32 Rmask, Gmask, Bmask, Amask;
-
+fprintf(cov_f, "%d\n", __LINE__ + 1);
 #if IS_SDLv1
+fprintf(cov_f, "%d\n", __LINE__ + 1);
                 if (flags != UINT32_MAX && flags & SDL_SRCALPHA) {
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
 #else  /* IS_SDLv2 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
                 if (flags != UINT32_MAX && flags & PGS_SRCALPHA) {
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
 #endif /* IS_SDLv2 */
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                     switch (bpp) {
+
                         case 16:
+                                                            fprintf(cov_f, "%d\n", __LINE__ - 1);
+                                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0xF << 8;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0xF << 4;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0xF;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Amask = 0xF << 12;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             break;
+
                         case 32:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                        	                fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0xFF << 16;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0xFF << 8;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0xFF;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Amask = 0xFF << 24;
+                                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             break;
+
                         default:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                             return RAISE(PyExc_ValueError,
                                          "no standard masks exist for given "
                                          "bitdepth with alpha");
                     }
                 }
                 else {
+                    fprintf(cov_f, "%d\n", __LINE__ - 1);
+                    fprintf(cov_f, "%d\n", __LINE__ + 1);
                     Amask = 0;
+                    fprintf(cov_f, "%d\n", __LINE__ + 1);
                     switch (bpp) {
+
                         case 8:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                        fprintf(cov_f, "%d\n", __LINE__ + 1);
 #if IS_SDLv1
+fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0xFF >> 6 << 5;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0xFF >> 5 << 2;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0xFF >> 6;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
 #else  /* IS_SDLv2 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
 #endif /* IS_SDLv2 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
                             break;
+                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                         case 12:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0xFF >> 4 << 8;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0xFF >> 4 << 4;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0xFF >> 4;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             break;
+
                         case 15:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0xFF >> 3 << 10;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0xFF >> 3 << 5;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0xFF >> 3;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             break;
+
                         case 16:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0xFF >> 3 << 11;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0xFF >> 2 << 5;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0xFF >> 3;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             break;
+
                         case 24:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+
                         case 32:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Rmask = 0xFF << 16;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Gmask = 0xFF << 8;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             Bmask = 0xFF;
+                            fprintf(cov_f, "%d\n", __LINE__ + 1);
                             break;
+
                         default:
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+                        fprintf(cov_f, "%d\n", __LINE__ + 1);
                             return RAISE(PyExc_ValueError,
                                          "nonstandard bit depth given");
                     }
                 }
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                 format.Rmask = Rmask;
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                 format.Gmask = Gmask;
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                 format.Bmask = Bmask;
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                 format.Amask = Amask;
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
             }
             else if (PySequence_Check(argobject) &&
                      PySequence_Size(argobject) == 4) {
+                     fprintf(cov_f, "%d\n", __LINE__ + 1);
                 Uint32 mask;
-
+		fprintf(cov_f, "%d\n", __LINE__ + 1);
                 if (!pg_UintFromObjIndex(argobject, 0, &format.Rmask) ||
                     !pg_UintFromObjIndex(argobject, 1, &format.Gmask) ||
                     !pg_UintFromObjIndex(argobject, 2, &format.Bmask) ||
                     !pg_UintFromObjIndex(argobject, 3, &format.Amask)) {
+                    fprintf(cov_f, "%d\n", __LINE__ + 1);
                     pgSurface_Unprep(self);
+                    fprintf(cov_f, "%d\n", __LINE__ + 1);
                     return RAISE(PyExc_ValueError,
                                  "invalid color masks given");
+                                 fprintf(cov_f, "%d\n", __LINE__ + 1);
                 }
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                 mask =
                     format.Rmask | format.Gmask | format.Bmask | format.Amask;
-                for (bpp = 0; bpp < 32; ++bpp)
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
+                for (bpp = 0; bpp < 32; ++bpp){
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                     if (!(mask >> bpp))
+                    fprintf(cov_f, "%d\n", __LINE__ + 1);
                         break;
+                }
             }
+
             else {
+                        fprintf(cov_f, "%d\n", __LINE__ - 1);
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
                 pgSurface_Unprep(self);
+                fprintf(cov_f, "%d\n", __LINE__ + 1);
                 return RAISE(
                     PyExc_ValueError,
                     "invalid argument specifying new format to convert to");
             }
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
             format.BitsPerPixel = (Uint8)bpp;
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
             format.BytesPerPixel = (bpp + 7) / 8;
-            if (format.BitsPerPixel > 8)
+            if (format.BitsPerPixel > 8){
                 /* Allow a 8 bit source surface with an empty palette to be
                  * converted to a format without a palette (Issue #131).
                  * If the target format has a non-NULL palette pointer then
                  * SDL_ConvertSurface checks that the palette is not empty--
                  * that at least one entry is not black.
                  */
+                 fprintf(cov_f, "%d\n", __LINE__ + 1);
                 format.palette = NULL;
+                }
+fprintf(cov_f, "%d\n", __LINE__ + 1);
 #if IS_SDLv1
-            if (flags == UINT32_MAX)
+fprintf(cov_f, "%d\n", __LINE__ + 1);
+            if (flags == UINT32_MAX){
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
                 flags = surf->flags;
-            if (format.Amask)
+                }
+            if (format.Amask){
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
                 flags |= SDL_SRCALPHA;
+                }
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
             newsurf = SDL_ConvertSurface(surf, &format, flags);
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
 #else /* IS_SDLv2 */
+fprintf(cov_f, "%d\n", __LINE__ + 1);
             newsurf = SDL_ConvertSurface(surf, &format, 0);
+            fprintf(cov_f, "%d\n", __LINE__ + 1);
             SDL_SetSurfaceBlendMode(newsurf, SDL_BLENDMODE_NONE);
+fprintf(cov_f, "%d\n", __LINE__ + 1);
 #endif /* IS_SDLv2 */
 
         }
     }
+
 #if IS_SDLv1
+
     else {
+               	fprintf(cov_f, "%d\n", __LINE__ - 4);
+       	fprintf(cov_f, "%d\n", __LINE__ - 2);
+    	fprintf(cov_f, "%d\n", __LINE__ + 1);
         newsurf = SDL_DisplayFormat(surf);
     }
+
 #else  /* IS_SDLv2 */
     else {
+               	fprintf(cov_f, "%d\n", __LINE__ - 3);
+               	fprintf(cov_f, "%d\n", __LINE__ - 2);
+           	fprintf(cov_f, "%d\n", __LINE__ - 1);
+    	fprintf(cov_f, "%d\n", __LINE__ + 1);
         newsurf = pg_DisplayFormat(surf);
+                	fprintf(cov_f, "%d\n", __LINE__ + 1);
         SDL_SetSurfaceBlendMode(newsurf, SDL_BLENDMODE_NONE);
 
     }
-
+        	fprintf(cov_f, "%d\n", __LINE__ + 1);
     if (has_colorkey) {
+            	fprintf(cov_f, "%d\n", __LINE__ + 1);
         colorkey = pg_map_rgba(newsurf, key_r, key_g, key_b, key_a);
+                	fprintf(cov_f, "%d\n", __LINE__ + 1);
         if (SDL_SetColorKey(newsurf, SDL_TRUE, colorkey) != 0) {
+                	fprintf(cov_f, "%d\n", __LINE__ + 1);
             PyErr_SetString(pgExc_SDLError, SDL_GetError());
+                    	fprintf(cov_f, "%d\n", __LINE__ + 1);
             SDL_FreeSurface(newsurf);
+                    	fprintf(cov_f, "%d\n", __LINE__ + 1);
             return NULL;
         }
     }
